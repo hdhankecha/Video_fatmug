@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ video.title }}</title>
+</head>
+<body>
+
+<h1>{{ video.title }}</h1>
+
+<video id="videoPlayer" controls width="640">
+    <source src="{{ video.video_file.url }}" type="video/mp4">
+    {% for subtitle in subtitles %}
+        <track
+                kind="subtitles"
+                src="{{ subtitle.subtitle_file.url }}"
+                srclang="{{ subtitle.language }}"
+                label="{{ subtitle.language }}"/>
+    {% endfor %}
+    <p>Your browser does not support the video tag.</p>
+</video>
+
+<form method="GET">
+    {{ form.as_p }}
+    <button type="submit">Search</button>
+</form>
+
+{% if search_results %}
+    <h3>Search Results:</h3>
+    <ul>
+        {% for result in search_results %}
+            <li>
+                <button onclick="(function(event) { jumpToTime('{{ result.timestamp }}', event); })(event)">
+                    <strong>{{ result.timestamp }}:</strong> {{ result.text }}
+                </button>
+            </li>
+
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No results found.</p>
+{% endif %}
+
+<a href="{% url 'video_list' %}">Back to Video List </a>
+
+<script>
+    function timestampToSeconds(timestamp) {
+        try {
+            const parts = timestamp.split(':');
+            const second = parseFloat(parts[0]) * 3600 + parseFloat(parts[1]) * 60 + parseFloat(parts[2].replace(',', '.'));
+            return second;
+        } catch (error) {
+            console.error("Error converting timestamp:", error);
+            return 0;  // Default to 0 if any issue arises
+        }
+    }
+
+
+    // Function to jump to the time in the video
+    function jumpToTime(timestamp, event) {
+        if (event) event.preventDefault();  // Make sure event is only prevented when triggered by a click
+
+        const video = document.getElementById('videoPlayer');
+        const timeInSeconds = timestampToSeconds(timestamp);
+
+        console.log('Jumping to timestamp:', timeInSeconds);
+        console.log('Video ready state:', video.readyState);
+
+        // Ensure the video has enough data to seek
+        if (video.readyState >= 2) {
+            // Try seeking directly if the video is ready to play
+            video.currentTime = timeInSeconds;
+            console.log('Video current time set to:', video.currentTime);
+
+            // Force play to check if currentTime changes
+            video.play();
+
+            video.addEventListener('seeked', function () {
+                console.log('Seeked to:', video.currentTime);
+            }, {once: true});
+        } else {
+            // Wait until the video can play
+            video.addEventListener('canplay', function () {
+                video.currentTime = timeInSeconds;
+                console.log('Video current time set after canplay:', video.currentTime);
+
+                video.play();
+
+                video.addEventListener('seeked', function () {
+                    console.log('Seeked to (after canplay):', video.currentTime);
+                }, {once: true});
+            }, {once: true});
+        }
+
+        // Double-check seeking after a small delay (to ensure readiness)
+        setTimeout(function () {
+            video.currentTime = timeInSeconds;
+            console.log('Forced seek to:', video.currentTime);
+        }, 200);
+    }
+
+
+</script>
+
+</body>
+</html>

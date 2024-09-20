@@ -1,0 +1,23 @@
+# Ignore virtual environment
+myenv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+*.log
+staticfiles/
+media/videos/
+
+# Ignore Docker files (optional)
+*.log
+*.pid
+
+# Ignore Python cache and environment files
+*.env
+
+# PostgreSQL specific
+pgdata/
+

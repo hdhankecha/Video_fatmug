@@ -1,0 +1,28 @@
+<!-- search_results.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Search Results</h1>
+    <form method="get" action="{% url 'search_subtitles' %}">
+        {{ form.as_p }}
+        <button type="submit">Search</button>
+    </form>
+
+    {% if results %}
+        <ul>
+            {% for result in results %}
+                <li>
+                    <a href="{% url 'video_detail' result.video.id %}?start={{ result.timestamp }}">{{ result.subtitle }}</a>
+                    (Video: {{ result.video.title }}, Timestamp: {{ result.timestamp }})
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</body>
+</html>
