@@ -1,6 +1,5 @@
 Video Subtitle Extraction Project
 
-
 Overview
 This web application is built using Django for backend processing and PostgreSQL for storing data, specifically focused on handling video subtitle extraction. The application allows users to upload videos, extract subtitles from them using ffmpeg, and store these subtitles in a PostgreSQL database. The app is containerized using Docker for easy deployment and development setup.
 
@@ -16,24 +15,31 @@ The entire application, including the Django backend and PostgreSQL database, is
 A docker-compose.yml file is provided to facilitate easy setup for development.
 The Docker container encapsulates Django, PostgreSQL, and the environment required for running the application.
 To set up the environment, you can use the following command:
-bash
+
 docker-compose up --build
+
 3. Backend (Django):
 The backend is developed using Django, and the main task is to handle video uploads, extract subtitles, and store both the video and subtitles in the database.
 The subtitles are saved in the media folder, and their metadata is stored in a PostgreSQL database.
+
 4. Frontend:
 The UI for this application is minimalistic and simple since the evaluation focuses on the backend logic with Django and PostgreSQL.
 The front-end allows users to upload videos, view the list of processed videos, and search through extracted subtitles.
+
 5. Storage:
 Uploaded videos are stored in the media directory as specified in the Django settings.
 Extracted subtitles (in .vtt format) are also stored in the media folder, and their paths, along with other metadata (language, stream index), are saved in the PostgreSQL database.
+
 6. Test Case:
 A sample video is provided for testing, and the application is required to process and handle this video.
 The goal is for the app to extract subtitles from the video, save them in the media folder, and store relevant information in the database.
+
 Code Explanation
+
 Video Upload and Subtitle Extraction
 The main function to handle video uploads is upload_video(request).
 When a video is uploaded, the form is validated, and the video is saved. The video path is then passed to the extract_subtitles_from_video() function.
+
 Subtitle Extraction Logic
 Subtitle Probing:
 
